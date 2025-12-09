@@ -10,25 +10,60 @@ def main() -> None:
         players_data = json.load(f)
 
     for player in players_data:
+        race_data = player.get("race") or {}
+        if isinstance(race_data, dict):
+            race_name = race_data.get("name", "")
+            race_description = race_data.get("description", "")
+            skills_list = race_data.get("skills", [])
+        elif isinstance(race_data, str):
+            race_name = race_data
+            race_description = ""
+            skills_list = []
+        else:
+            race_name = ""
+            race_description = ""
+            skills_list = []
+
         race, _ = Race.objects.get_or_create(
-            name=player["race"]["name"],
-            defaults={"description": player["race"].get("description", "")}
+            name=race_name,
+            defaults={"description": race_description}
         )
 
-        for skill_data in player["race"].get("skills", []):
+        for skill_data in skills_list:
+            if isinstance(skill_data, dict):
+                skill_name = skill_data.get("name")
+                bonus = skill_data.get("bonus", "")
+            else:
+                skill_name = skill_data
+                bonus = ""
+
+            if not skill_name:
+                continue
+
             Skill.objects.get_or_create(
-                name=skill_data["name"],
+                name=skill_name,
                 defaults={
-                    "bonus": skill_data["bonus"],
+                    "bonus": bonus,
                     "race": race,
                 }
             )
 
+        guild_data = player.get("guild")
         guild = None
-        if "guild" in player and player["guild"]:
+        if isinstance(guild_data, dict):
+            guild_name = guild_data.get("name")
+            guild_description = guild_data.get("description")
+        elif isinstance(guild_data, str):
+            guild_name = guild_data
+            guild_description = None
+        else:
+            guild_name = None
+            guild_description = None
+
+        if guild_name:
             guild, _ = Guild.objects.get_or_create(
-                name=player["guild"]["name"],
-                defaults={"description": player["guild"].get("description")}
+                name=guild_name,
+                defaults={"description": guild_description}
             )
 
         Player.objects.get_or_create(
