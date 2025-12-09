@@ -9,7 +9,27 @@ def main() -> None:
     with open(players_file, "r", encoding="utf-8") as f:
         players_data = json.load(f)
 
-    for player in players_data:
+    # normalize to a list of player entries (accept dict or string entries)
+    if isinstance(players_data, dict):
+        # some fixtures may wrap the list under a top-level key
+        players_data = players_data.get("players", [])
+    if not isinstance(players_data, list):
+        players_data = [players_data]
+
+    for raw_player in players_data:
+        # allow a player to be a dict or a simple string (nickname)
+        if isinstance(raw_player, str):
+            player = {"nickname": raw_player}
+        elif isinstance(raw_player, dict):
+            player = raw_player
+        else:
+            # unexpected type: skip
+            continue
+
+        nickname = player.get("nickname")
+        if not nickname:
+            continue
+
         race_data = player.get("race") or {}
         if isinstance(race_data, dict):
             race_name = race_data.get("name", "")
@@ -67,7 +87,7 @@ def main() -> None:
             )
 
         Player.objects.get_or_create(
-            nickname=player["nickname"],
+            nickname=nickname,
             defaults={
                 "email": player.get("email", ""),
                 "bio": player.get("bio", ""),
