@@ -3,7 +3,7 @@ from pathlib import Path
 from db.models import Race, Skill, Guild, Player
 
 
-def main():
+def main() -> None:
     players_file = Path(__file__).resolve().parent / "players.json"
 
     with open(players_file, "r", encoding="utf-8") as f:
