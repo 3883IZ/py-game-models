@@ -7,23 +7,45 @@ def main() -> None:
     Guild.objects.all().delete()
     Race.objects.all().delete()
 
-    elf = Race.objects.create(name="elf", description="The magic race")
-    human = Race.objects.create(name="human", description="Human race")
+    elf = Race.objects.create(
+        name="elf",
+        description="The magic race",
+    )
+    human = Race.objects.create(
+        name="human",
+        description="Human race",
+    )
 
     Skill.objects.create(
         name="Teleportation",
-        bonus="The ability to move so fast they look like they're teleporting. Could be considered to technically be Teleportation.",
+        bonus=(
+            "The ability to move so fast they look like they're "
+            "teleporting. Could be considered to technically be "
+            "Teleportation."
+        ),
         race=elf,
     )
     Skill.objects.create(
         name="Reality Warping",
-        bonus="The ability to Warp Reality. Make the impossible become possible but can't warp anything containing the structure that holds everything together (Which are many creatures.)",
+        bonus=(
+            "The ability to Warp Reality. Make the impossible become "
+            "possible but can't warp anything containing the structure "
+            "that holds everything together (Which are many creatures.)"
+        ),
         race=elf,
     )
 
-    archers = Guild.objects.create(name="archers")
-    mags = Guild.objects.create(name="mags", description="A community of the elf mags")
-    blacksmiths = Guild.objects.create(name="blacksmiths", description="A community of the blacksmiths")
+    archers = Guild.objects.create(
+        name="archers",
+    )
+    mags = Guild.objects.create(
+        name="mags",
+        description="A community of the elf mags",
+    )
+    blacksmiths = Guild.objects.create(
+        name="blacksmiths",
+        description="A community of the blacksmiths",
+    )
 
     Player.objects.create(
         nickname="john",
